@@ -125,7 +125,8 @@ export default {
           model: MODEL,
           store: false,
           input: [
-            { type: "user_input", content: [inputPart, { type: "text", text: prompt }] }
+            { type: "text", text: prompt },
+            inputPart
           ]
         })
       });
