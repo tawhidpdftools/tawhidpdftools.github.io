@@ -4,7 +4,7 @@
  * Add a Worker Secret named GEMINI_API_KEY before use.
  */
 const ALLOWED_ORIGINS = new Set(["https://tawhidpdftools.github.io"]);
-const MODEL = "gemini-3.8-flash";
+const MODELS = ["gemini-3.6-flash", "gemini-3.5-flash-lite"];
 const MAX_BODY_BYTES = 15 * 1024 * 1024;
 const MAX_FILE_BYTES = 10 * 1024 * 1024;
 const ALLOWED_TYPES = new Set(["image/jpeg", "image/png", "image/webp", "application/pdf"]);
@@ -36,7 +36,7 @@ export default {
 
     if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: cors });
     if (request.method === "GET" && url.pathname === "/health") {
-      return json({ ok: true, service: "handwriting-recognition", model: MODEL }, 200, cors);
+      return json({ ok: true, service: "handwriting-recognition", model: MODELS[0] }, 200, cors);
     }
     if (request.method !== "POST" || url.pathname !== "/api/recognize") {
       return json({ error: "Not found." }, 404, cors);
@@ -114,27 +114,53 @@ export default {
         ? { type: "document", data, mime_type: mimeType }
         : { type: "image", data, mime_type: mimeType };
 
-      const response = await fetch("https://generativelanguage.googleapis.com/v1beta/interactions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-goog-api-key": env.GEMINI_API_KEY,
-          "Api-Revision": "2026-05-20"
-        },
-        body: JSON.stringify({
-          model: MODEL,
-          store: false,
-          input: [
-            { type: "text", text: prompt },
-            inputPart
-          ]
-        })
-      });
+      let result = null;
+      let modelUsed = "";
+      let lastStatus = 503;
 
-      const result = await response.json();
-      if (!response.ok) {
-        const detail = result?.error?.message || "The handwriting model could not process this file.";
+      // Try the current stable Flash model first, then a lighter stable fallback.
+      for (let modelIndex = 0; modelIndex < MODELS.length; modelIndex++) {
+        const model = MODELS[modelIndex];
+        const response = await fetch("https://generativelanguage.googleapis.com/v1beta/interactions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-goog-api-key": env.GEMINI_API_KEY,
+            "Api-Revision": "2026-05-20"
+          },
+          body: JSON.stringify({
+            model,
+            store: false,
+            input: [
+              { type: "text", text: prompt },
+              inputPart
+            ]
+          })
+        });
+
+        const payload = await response.json().catch(() => ({}));
+        if (response.ok) {
+          result = payload;
+          modelUsed = model;
+          break;
+        }
+
+        lastStatus = response.status;
+        const detail = payload?.error?.message || "The handwriting model could not process this file.";
+
+        // Only temporary overloads move to the fallback model.
+        if (response.status === 503 && modelIndex < MODELS.length - 1) {
+          await new Promise(resolve => setTimeout(resolve, 900));
+          continue;
+        }
+
         return json({ error: detail }, response.status >= 500 ? 502 : response.status, cors);
+      }
+
+      if (!result) {
+        return json({
+          error: "Google's AI service is temporarily overloaded. Please wait 1–2 minutes and try again."
+        }, lastStatus === 503 ? 503 : 502, cors);
       }
 
       const text = (result.steps || [])
@@ -149,7 +175,7 @@ export default {
         return json({ error: "The model returned no text. Please try a clearer image or PDF." }, 502, cors);
       }
 
-      return json({ text, model: MODEL }, 200, cors);
+      return json({ text, model: modelUsed }, 200, cors);
     } catch (error) {
       return json({ error: error?.message || "Unexpected server error." }, 500, cors);
     }
