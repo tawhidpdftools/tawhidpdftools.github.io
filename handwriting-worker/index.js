@@ -149,9 +149,12 @@ export default {
         const detail = payload?.error?.message || "The handwriting model could not process this file.";
 
         // Only temporary overloads move to the fallback model.
-        if (response.status === 503 && modelIndex < MODELS.length - 1) {
-          await new Promise(resolve => setTimeout(resolve, 900));
-          continue;
+        if (response.status === 503) {
+          if (modelIndex < MODELS.length - 1) {
+            await new Promise(resolve => setTimeout(resolve, 900));
+            continue;
+          }
+          break;
         }
 
         return json({ error: detail }, response.status >= 500 ? 502 : response.status, cors);
