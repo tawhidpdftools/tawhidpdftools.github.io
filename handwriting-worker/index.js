@@ -44,6 +44,9 @@ export default {
     if (!env.GEMINI_API_KEY) {
       return json({ error: "The server API key has not been configured yet." }, 503, cors);
     }
+    if (!env.TURNSTILE_SECRET) {
+      return json({ error: "Bot protection has not been configured yet." }, 503, cors);
+    }
 
     const declaredLength = Number(request.headers.get("Content-Length") || 0);
     if (declaredLength > MAX_BODY_BYTES) {
@@ -55,6 +58,23 @@ export default {
       const mimeType = String(body.mimeType || "").toLowerCase();
       const data = String(body.data || "");
       const language = String(body.language || "auto").slice(0, 24);
+      const turnstileToken = String(body.turnstileToken || "");
+      if (!turnstileToken || turnstileToken.length > 2048) {
+        return json({ error: "Complete the security check and try again." }, 403, cors);
+      }
+      const verificationForm = new FormData();
+      verificationForm.append("secret", env.TURNSTILE_SECRET);
+      verificationForm.append("response", turnstileToken);
+      const remoteIp = request.headers.get("CF-Connecting-IP");
+      if (remoteIp) verificationForm.append("remoteip", remoteIp);
+      const verificationResponse = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
+        method: "POST",
+        body: verificationForm
+      });
+      const verification = await verificationResponse.json();
+      if (!verification.success || verification.hostname !== "tawhidpdftools.github.io") {
+        return json({ error: "Security verification failed. Please try again." }, 403, cors);
+      }
 
       if (!ALLOWED_TYPES.has(mimeType)) {
         return json({ error: "Please upload a JPG, PNG, WebP image or PDF." }, 415, cors);
