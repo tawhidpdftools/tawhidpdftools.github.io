@@ -51,7 +51,7 @@
 <section class="privacy wrap" id="privacy"><div class="check">✓</div><div><h2>Your files stay yours.</h2><p>Merge, split, rotate, watermark, and other PDF edits run locally in your browser. Handwriting to Text sends the selected image or PDF to the connected AI service for transcription. Voice Reader sends the recognized text to an external speech provider to generate audio and word timings. Review the provider's data-use terms before uploading confidential documents or reading private text.</p></div></section></main>
 <dialog id="dlg" class="dialog"><form method="dialog" class="dtop"><div><span class="eyebrow">PDF WORKSPACE</span><h2 id="title">PDF Tool</h2></div><button class="close" aria-label="Close tool">×</button></form><div class="dcontent"><p id="desc">Choose files to get started.</p><label class="drop" id="drop"><span style="font-size:27px;color:#315b86">↑</span><strong>Choose file(s) or drop them here</strong><span id="hint" style="font-size:12px;color:#65748a">PDF files</span><input id="files" type="file" accept="application/pdf" multiple></label><div id="selected" class="selected" aria-live="polite"></div><div id="opts" class="opts"></div><div id="turnstileMount" class="turnstile-mount" hidden></div><div id="ttsTurnstileMount" class="tts-turnstile-mount"></div><div id="textOutput" class="text-output" hidden><label for="recognizedText"><strong>Recognized Text</strong> <span style="font-weight:400;color:#65748a">— edit anything before copying</span></label><textarea id="recognizedText" rows="13" placeholder="Recognized text will appear here…"></textarea><section class="voice-panel" aria-label="Voice reader">
 <div class="voice-head"><strong>Voice Reader</strong><span class="voice-profile">Auto · Young Male</span></div>
-<p class="voice-note">Reads Bengali, English and Arabic in the same order as the text. Internet is required to create the audio.</p>
+<p class="voice-note">Reads Bengali, English and Arabic in the same order as the text. Internet is required. Maximum 12,000 characters per reading.</p>
 <button type="button" id="speakText" class="voice-generate">▶ Generate &amp; Read</button>
 <div id="voicePlayer" class="voice-player" hidden>
 <div class="voice-transport">
@@ -273,7 +273,14 @@ speakText.addEventListener('click',async function(){
 playPauseText.addEventListener('click',function(){
   if(!audioTracks.length)return;
   if(audioPlaying){audioTracks[currentTrackIndex].audio.pause();audioPlaying=false;playPauseText.textContent='▶ Resume';voiceStatus.textContent='Reading paused.';}
-  else{playTrack(currentTrackIndex).catch(function(){});}
+  else{
+    var activeTrack=audioTracks[currentTrackIndex];
+    if(activeTrack&&currentTrackIndex===audioTracks.length-1&&activeTrack.audio.currentTime>=activeTrack.duration-0.05){
+      audioTracks.forEach(function(track){track.audio.pause();});
+      currentTrackIndex=0;audioTracks[0].audio.currentTime=0;
+    }
+    playTrack(currentTrackIndex).catch(function(){});
+  }
 });
 stopText.addEventListener('click',function(){
   if(!audioTracks.length)return;
