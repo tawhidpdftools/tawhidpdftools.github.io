@@ -172,28 +172,37 @@ async function classifySpeechEmotions(parts, env) {
   for (let modelIndex = 0; modelIndex < MODELS.length; modelIndex++) {
     const model = MODELS[modelIndex];
     try {
-      const response = await fetch("https://generativelanguage.googleapis.com/v1beta/interactions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-goog-api-key": env.GEMINI_API_KEY,
-          "Api-Revision": "2026-05-20"
-        },
-        body: JSON.stringify({
-          model,
-          store: false,
-          input: [{ type: "text", text: prompt }],
-          response_format: {
-            type: "text",
-            mime_type: "application/json",
-            schema
+      const emotionController = new AbortController();
+      const emotionTimeout = setTimeout(() => emotionController.abort(), 15000);
+      let response;
+      try {
+        response = await fetch("https://generativelanguage.googleapis.com/v1beta/interactions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-goog-api-key": env.GEMINI_API_KEY,
+            "Api-Revision": "2026-05-20"
           },
-          generation_config: {
-            temperature: 0.1,
-            max_output_tokens: 2048
-          }
-        })
-      });
+          body: JSON.stringify({
+            model,
+            store: false,
+            input: [{ type: "text", text: prompt }],
+            response_format: {
+              type: "text",
+              mime_type: "application/json",
+              schema
+            },
+            generation_config: {
+              temperature: 0.1,
+              thinking_level: "minimal",
+              max_output_tokens: 2048
+            }
+          }),
+          signal: emotionController.signal
+        });
+      } finally {
+        clearTimeout(emotionTimeout);
+      }
       const payload = await response.json().catch(() => ({}));
       if (!response.ok) {
         lastError = payload?.error?.message || "Emotion analysis was unavailable.";
@@ -358,6 +367,7 @@ export default {
         const body = await request.json();
         const text = String(body.text || "");
         if (!text.trim()) return json({ error: "There is no text to read." }, 400, cors);
+        console.log({event:"voice_tts_request_started", chars:text.length});
         if (text.length > TTS_MAX_CHARS) {
           return json({
             error: "This reading is longer than 12,000 characters. Please divide the text into smaller sections."
@@ -370,7 +380,10 @@ export default {
         const parts = splitSpeechText(text);
         if (!parts.length) return json({ error: "No readable text was found." }, 400, cors);
         if (parts.length > 20) return json({ error: "This text contains too many language switches for one request. Please split it into smaller sections." }, 413, cors);
+        console.log({event:"voice_tts_language_segments", count:parts.length, languages:parts.map(p=>p.language)});
+        const emotionStartedAt = Date.now();
         const emotionTagsByPart = await classifySpeechEmotions(parts, env);
+        console.log({event:"voice_tts_emotion_analysis_finished", elapsedMs:Date.now()-emotionStartedAt, taggedSentences:emotionTagsByPart.reduce((sum,tags)=>sum+tags.length,0)});
         const clips = [];
         for (let partIndex = 0; partIndex < parts.length; partIndex++) {
           const part = parts[partIndex];
@@ -379,19 +392,34 @@ export default {
             encodeURIComponent(env.ELEVENLABS_VOICE_ID) +
             "/with-timestamps?output_format=mp3_22050_32";
 
-          let response = await fetch(endpoint, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "xi-api-key": env.ELEVENLABS_API_KEY
-            },
-            body: JSON.stringify({
-              text: tagged.text,
-              model_id: "eleven_v4",
-              language_code: part.language
-            })
-          });
-          let result = await response.json().catch(() => ({}));
+          const ttsStartedAt = Date.now();
+          console.log({event:"voice_tts_segment_started", language:part.language, chars:part.text.length, segment:partIndex+1, total:parts.length});
+          const ttsController = new AbortController();
+          const ttsTimeout = setTimeout(() => ttsController.abort(), 60000);
+          let response;
+          let result = {};
+          try {
+            response = await fetch(endpoint, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "xi-api-key": env.ELEVENLABS_API_KEY
+              },
+              body: JSON.stringify({
+                text: tagged.text,
+                model_id: "eleven_v4",
+                language_code: part.language
+              }),
+              signal: ttsController.signal
+            });
+            result = await response.json().catch(() => ({}));
+          } catch (speechError) {
+            console.error({event:"voice_tts_segment_failed", language:part.language, elapsedMs:Date.now()-ttsStartedAt, reason:speechError?.name || "network_error"});
+            return json({error:speechError?.name === "AbortError" ? "ElevenLabs took too long to generate this audio segment. Please try a shorter passage." : "Could not connect to ElevenLabs. Please try again."}, 504, cors);
+          } finally {
+            clearTimeout(ttsTimeout);
+          }
+          console.log({event:"voice_tts_segment_finished", language:part.language, elapsedMs:Date.now()-ttsStartedAt, status:response.status});
 
           if (!response.ok && [400, 404, 422].includes(response.status)) {
             // Keep compatibility with Voice Design voices if v4 is unavailable
@@ -516,24 +544,44 @@ export default {
       // Try the current stable Flash model first, then a lighter stable fallback.
       for (let modelIndex = 0; modelIndex < MODELS.length; modelIndex++) {
         const model = MODELS[modelIndex];
-        const response = await fetch("https://generativelanguage.googleapis.com/v1beta/interactions", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "x-goog-api-key": env.GEMINI_API_KEY,
-            "Api-Revision": "2026-05-20"
-          },
-          body: JSON.stringify({
-            model,
-            store: false,
-            input: [
-              { type: "text", text: prompt },
-              inputPart
-            ]
-          })
-        });
-
-        const payload = await response.json().catch(() => ({}));
+        const ocrController = new AbortController();
+        const ocrTimeout = setTimeout(() => ocrController.abort(), 25000);
+        const ocrStartedAt = Date.now();
+        let response;
+        let payload = {};
+        try {
+          response = await fetch("https://generativelanguage.googleapis.com/v1beta/interactions", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "x-goog-api-key": env.GEMINI_API_KEY,
+              "Api-Revision": "2026-05-20"
+            },
+            body: JSON.stringify({
+              model,
+              store: false,
+              input: [
+                { type: "text", text: prompt },
+                inputPart
+              ],
+              generation_config: {
+                thinking_level: "minimal"
+              }
+            }),
+            signal: ocrController.signal
+          });
+          payload = await response.json().catch(() => ({}));
+        } catch (modelError) {
+          lastStatus = 504;
+          console.warn({event:"ocr_model_timeout_or_network_error", model, elapsedMs:Date.now()-ocrStartedAt, reason:modelError?.name || "network_error"});
+          if (modelIndex < MODELS.length - 1) {
+            continue;
+          }
+          break;
+        } finally {
+          clearTimeout(ocrTimeout);
+        }
+        console.log({event:"ocr_model_response", model, status:response.status, elapsedMs:Date.now()-ocrStartedAt});
         if (response.ok) {
           result = payload;
           modelUsed = model;
@@ -544,9 +592,9 @@ export default {
         const detail = payload?.error?.message || "The handwriting model could not process this file.";
 
         // Only temporary overloads move to the fallback model.
-        if (response.status === 503) {
+        if (response.status >= 500 && response.status <= 504) {
           if (modelIndex < MODELS.length - 1) {
-            await new Promise(resolve => setTimeout(resolve, 900));
+            await new Promise(resolve => setTimeout(resolve, 300));
             continue;
           }
           break;
@@ -557,8 +605,10 @@ export default {
 
       if (!result) {
         return json({
-          error: "Google's AI service is temporarily overloaded. Please wait 1–2 minutes and try again."
-        }, lastStatus === 503 ? 503 : 502, cors);
+          error: lastStatus === 504
+            ? "Google's AI service took too long to respond. Please try the file again; the faster fallback model was also unavailable."
+            : "Google's AI service is temporarily overloaded. Please wait a moment and try again."
+        }, lastStatus === 503 ? 503 : lastStatus === 504 ? 504 : 502, cors);
       }
 
       const text = (result.steps || [])
