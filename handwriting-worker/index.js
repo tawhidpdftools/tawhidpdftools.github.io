@@ -142,6 +142,7 @@ export default {
 
         const parts = splitSpeechText(text);
         if (!parts.length) return json({ error: "No readable text was found." }, 400, cors);
+        if (parts.length > 20) return json({ error: "This text contains too many language switches for one request. Please split it into smaller sections." }, 413, cors);
         const clips = [];
         for (const part of parts) {
           const endpoint = "https://api.elevenlabs.io/v1/text-to-speech/" +
