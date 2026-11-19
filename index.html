@@ -28,7 +28,7 @@
 .voice-reading-text{margin-top:13px;padding:14px;max-height:340px;overflow:auto;border:1px solid #dce4ec;border-radius:12px;background:#fff;white-space:pre-wrap;overflow-wrap:anywhere;line-height:2;font-size:15px;unicode-bidi:plaintext;direction:auto}
 .voice-reading-text .voice-word{border-radius:4px}
 .voice-reading-text .voice-word.current-word{background:#ffe28a;color:#392900;box-shadow:0 0 0 2px #ffe28a}
-.tts-turnstile-mount{position:fixed;left:-10000px;top:-10000px;width:1px;height:1px;overflow:hidden}
+.tts-turnstile-mount{margin-top:10px;min-height:0}
 @media(max-width:420px){.voice-transport{grid-template-columns:repeat(3,minmax(0,1fr))}.voice-transport button{padding:11px 5px}}
 
 </style>
@@ -49,10 +49,11 @@
 <button class="card mint" data-tool="handwriting" data-search="handwriting to text handwritten recognition OCR image bengali english arabic"><span class="ico">✍</span><span class="ctitle">Handwriting to Text</span><span class="desc">Convert handwritten images or PDFs into editable text.</span><span class="action">Open tool <b>→</b></span></button>
 </div><p id="empty" class="status" hidden>No matching tools. Try another search.</p></section>
 <section class="privacy wrap" id="privacy"><div class="check">✓</div><div><h2>Your files stay yours.</h2><p>Merge, split, rotate, watermark, and other PDF edits run locally in your browser. Handwriting to Text sends the selected image or PDF to the connected AI service for transcription. Voice Reader sends the recognized text to Gemini for sentence-level emotion analysis (with common scripture/religious quotation passages excluded from that analysis) and to ElevenLabs to generate audio and word timings. Review both providers' data-use terms before reading private or confidential text. Review the provider's data-use terms before uploading confidential documents or reading private text.</p></div></section></main>
-<dialog id="dlg" class="dialog"><form method="dialog" class="dtop"><div><span class="eyebrow">PDF WORKSPACE</span><h2 id="title">PDF Tool</h2></div><button class="close" aria-label="Close tool">×</button></form><div class="dcontent"><p id="desc">Choose files to get started.</p><label class="drop" id="drop"><span style="font-size:27px;color:#315b86">↑</span><strong>Choose file(s) or drop them here</strong><span id="hint" style="font-size:12px;color:#65748a">PDF files</span><input id="files" type="file" accept="application/pdf" multiple></label><div id="selected" class="selected" aria-live="polite"></div><div id="opts" class="opts"></div><div id="turnstileMount" class="turnstile-mount" hidden></div><div id="ttsTurnstileMount" class="tts-turnstile-mount"></div><div id="textOutput" class="text-output" hidden><label for="recognizedText"><strong>Recognized Text</strong> <span style="font-weight:400;color:#65748a">— edit anything before copying</span></label><textarea id="recognizedText" rows="13" placeholder="Recognized text will appear here…"></textarea><section class="voice-panel" aria-label="Voice reader">
+<dialog id="dlg" class="dialog"><form method="dialog" class="dtop"><div><span class="eyebrow">PDF WORKSPACE</span><h2 id="title">PDF Tool</h2></div><button class="close" aria-label="Close tool">×</button></form><div class="dcontent"><p id="desc">Choose files to get started.</p><label class="drop" id="drop"><span style="font-size:27px;color:#315b86">↑</span><strong>Choose file(s) or drop them here</strong><span id="hint" style="font-size:12px;color:#65748a">PDF files</span><input id="files" type="file" accept="application/pdf" multiple></label><div id="selected" class="selected" aria-live="polite"></div><div id="opts" class="opts"></div><div id="turnstileMount" class="turnstile-mount" hidden></div><div id="textOutput" class="text-output" hidden><label for="recognizedText"><strong>Recognized Text</strong> <span style="font-weight:400;color:#65748a">— edit anything before copying</span></label><textarea id="recognizedText" rows="13" placeholder="Recognized text will appear here…"></textarea><section class="voice-panel" aria-label="Voice reader">
 <div class="voice-head"><strong>Voice Reader</strong><span class="voice-profile">Auto · Young Male</span></div>
-<p class="voice-note">Reads Bengali, English and Arabic in the original order, with natural sentence-level emotion. Scripture and religious quotations stay neutral. Internet is required; maximum 12,000 characters per reading.</p>
+<p class="voice-note">Reads Bengali, English and Arabic in the original order, with natural sentence-level emotion. Scripture and religious quotations stay neutral. Internet is required; maximum 12,000 characters per reading. Complete the security check when it appears.</p>
 <button type="button" id="speakText" class="voice-generate">▶ Generate &amp; Read</button>
+<div id="ttsTurnstileMount" class="tts-turnstile-mount" hidden></div>
 <div id="voicePlayer" class="voice-player" hidden>
 <div class="voice-transport">
 <button type="button" id="back10Text" aria-label="Back 10 seconds">−10s</button>
@@ -137,12 +138,29 @@ function getTtsToken(){
   return new Promise(function(resolve,reject){
     if(!window.turnstile){reject(Error('Security verification is still loading. Please try again in a moment.'));return;}
     ttsTokenResolve=resolve;ttsTokenReject=reject;
+    ttsTurnstileMount.hidden=false;
+    ttsTurnstileMount.setAttribute('aria-label','Security verification for Voice Reader');
     try{
+      
+      ttsTokenTimer=setTimeout(function(){resolveTtsToken('',Error('Security verification timed out. Please complete the check and try again.'));},90000);
       if(ttsTurnstileWidgetId===null){
-        ttsTurnstileWidgetId=window.turnstile.render(ttsTurnstileMount,{sitekey:TURNSTILE_SITE_KEY,size:'invisible',callback:function(token){resolveTtsToken(token);},'error-callback':function(){resolveTtsToken('',Error('Security verification failed. Please try again.'));},'expired-callback':function(){resolveTtsToken('',Error('Security verification expired. Please try again.'));}});
-      }else{window.turnstile.reset(ttsTurnstileWidgetId);}
-      ttsTokenTimer=setTimeout(function(){resolveTtsToken('',Error('Security verification timed out. Please try again.'));},25000);
-      window.turnstile.execute(ttsTurnstileWidgetId);
+        ttsTurnstileWidgetId=window.turnstile.render(ttsTurnstileMount,{
+          sitekey:TURNSTILE_SITE_KEY,
+          theme:'light',
+          callback:function(token){
+            ttsTurnstileMount.hidden=true;
+            resolveTtsToken(token);
+          },
+          'error-callback':function(){
+            resolveTtsToken('',Error('Security verification failed. Please try again.'));
+          },
+          'expired-callback':function(){
+            resolveTtsToken('',Error('Security verification expired. Please try again.'));
+          }
+        });
+      }else{
+        window.turnstile.reset(ttsTurnstileWidgetId);
+      }
     }catch(e){resolveTtsToken('',e);}
   });
 }
@@ -251,10 +269,21 @@ function seekTo(seconds){
 }
 speakText.addEventListener('click',async function(){
   var text=recognizedText.value;if(!text.trim()){voiceStatus.textContent='There is no text to read yet.';return;}
-  speakText.disabled=true;voiceStatus.textContent='Preparing the young male voice and audio…';
+  speakText.disabled=true;voiceStatus.textContent='Complete the security check to start audio…';
   try{
     var token=await getTtsToken();
-    var response=await fetch(HANDWRITING_API_URL.replace(/\/$/,'')+'/api/tts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:text,turnstileToken:token})});
+    voiceStatus.textContent='Analyzing the text and generating audio…';
+    var ttsController=new AbortController();
+    var ttsTimeout=setTimeout(function(){ttsController.abort();},300000);
+    var response;
+    try{
+      response=await fetch(HANDWRITING_API_URL.replace(/\/$/,'')+'/api/tts',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({text:text,turnstileToken:token}),
+        signal:ttsController.signal
+      });
+    }finally{clearTimeout(ttsTimeout);}
     var result=await response.json().catch(function(){return {};});
     if(!response.ok)throw Error(result.error||'Voice Reader could not generate audio.');
     if(!Array.isArray(result.clips)||!result.clips.length)throw Error('The speech service returned no audio.');
@@ -266,7 +295,9 @@ speakText.addEventListener('click',async function(){
     if(recognizedText)recognizedText.hidden=false;
     if(voicePlayer)voicePlayer.hidden=true;
     if(editText)editText.hidden=true;
-    voiceStatus.textContent=e&&e.message?e.message:'Voice Reader could not generate audio.';
+    voiceStatus.textContent=e&&e.name==='AbortError'
+      ?'Audio generation took too long. Please try a shorter passage.'
+      :(e&&e.message?e.message:'Voice Reader could not generate audio.');
     speakText.disabled=false;
   }
 });
