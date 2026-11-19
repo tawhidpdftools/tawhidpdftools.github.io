@@ -7,6 +7,30 @@
 <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js" onerror="this.onerror=null;this.src='https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js';"></script>
 <style>
 :root{--navy:#17324d;--ink:#203047;--muted:#65748a;--paper:#fffdf9;--line:#e8eaf0}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.55}.wrap{max-width:1160px;margin:auto;padding-left:24px;padding-right:24px}.head{display:flex;align-items:center;justify-content:space-between;padding-top:20px;padding-bottom:20px;gap:20px}.brand{display:flex;align-items:center;gap:11px;color:var(--navy);text-decoration:none;font-size:17px}.brand-icon{display:grid;place-items:center;background:var(--navy);color:white;font-size:12px;font-weight:800;border-radius:10px;width:42px;height:42px}.head nav{display:flex;gap:24px}.head nav a{color:var(--muted);font-size:14px;text-decoration:none}.hero{text-align:center;padding:74px 20px 80px;background:radial-gradient(ellipse at 50% 0%,#eaf2fb,transparent 65%)}.eyebrow{font-size:11px;letter-spacing:1.8px;font-weight:800;color:#55799d}.hero h1{font-size:clamp(40px,7vw,68px);line-height:1.07;letter-spacing:-2.5px;margin:17px 0 20px;color:var(--navy)}.hero h1 span{color:#5280ac}.hero p{max-width:590px;margin:auto;color:var(--muted);font-size:17px}.primary{display:inline-block;margin-top:28px;padding:13px 20px;border-radius:12px;background:var(--navy);color:white;text-decoration:none;font-weight:750;font-size:14px}.tools{padding-top:62px;padding-bottom:70px}.section-head{display:flex;align-items:end;justify-content:space-between;gap:22px;margin-bottom:26px}.section-head h2{font-size:clamp(25px,4vw,34px);letter-spacing:-1px;margin:7px 0 0}.search{width:min(280px,100%);border:1px solid var(--line);border-radius:12px;padding:13px 15px;background:#fff;font:inherit;font-size:14px}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.card{appearance:none;border:1px solid transparent;text-align:left;border-radius:22px;padding:24px;min-height:220px;display:flex;flex-direction:column;align-items:flex-start;color:var(--ink);font:inherit;cursor:pointer;transition:transform .18s,box-shadow .18s}.card:hover{transform:translateY(-4px);box-shadow:0 14px 35px #22344a12}.card:focus-visible,button:focus-visible,a:focus-visible{outline:3px solid #315b86;outline-offset:3px}.peach{background:#fff0e3}.mint{background:#e4f6e9}.lavender{background:#ecebff}.pink{background:#fbe8f3}.sky{background:#e3f5fa}.butter{background:#fff4d9}.ico{display:grid;place-items:center;width:46px;height:46px;background:#ffffffb8;border-radius:14px;font-size:25px;font-weight:700;margin-bottom:17px}.ctitle{font-size:18px;font-weight:800}.desc{color:#5e6a7b;font-size:14px;margin-top:5px}.action{margin-top:auto;padding-top:18px;font-size:13px;font-weight:800;color:var(--navy);width:100%;display:flex;justify-content:space-between}.privacy{margin-bottom:60px;background:#f0f5f8;border:1px solid #e4ebf0;border-radius:20px;padding:27px;display:flex;gap:18px;align-items:flex-start}.check{flex:0 0 42px;height:42px;border-radius:50%;background:#d9f2e2;color:#177448;display:grid;place-items:center;font-size:23px;font-weight:900}.privacy h2{margin:0 0 5px;font-size:18px}.privacy p{margin:0;color:var(--muted);font-size:14px}.dialog{width:min(600px,calc(100% - 28px));max-height:88vh;overflow:auto;padding:0;border:0;border-radius:22px;box-shadow:0 24px 90px #14253b45}.dialog::backdrop{background:#0e1c2bc0;backdrop-filter:blur(4px)}.dtop{display:flex;justify-content:space-between;align-items:center;padding:23px 25px 16px;border-bottom:1px solid var(--line)}.dtop h2{margin:4px 0 0;font-size:25px}.close{border:0;background:#f0f2f5;border-radius:50%;width:38px;height:38px;font-size:25px;cursor:pointer}.dcontent{padding:22px 25px 26px}.dcontent>p{color:var(--muted);font-size:14px;margin:0 0 17px}.drop{position:relative;border:2px dashed #cbd6e2;border-radius:16px;background:#f7fafc;min-height:150px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:5px;text-align:center;cursor:pointer;padding:20px}.drop.dragging{border-color:#315b86;background:#edf5ff}.drop input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}.selected{font-size:13px;color:var(--muted);margin-top:12px;overflow-wrap:anywhere}.opts{display:grid;gap:12px;margin-top:15px}.opts label{font-size:13px;font-weight:700;display:grid;gap:6px}.opts input,.opts select,.opts textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:11px 12px;background:white;font:inherit;font-size:14px}.opts textarea{min-height:110px;resize:vertical}.size-control{display:flex;align-items:center;gap:10px;margin-top:6px}.size-control .size-value{flex:1;text-align:center;border:1px solid var(--line);border-radius:10px;padding:10px;background:#fff;font-weight:800}.size-control button{width:42px;height:42px;border:1px solid var(--line);border-radius:10px;background:#f1f5f9;color:var(--navy);font-size:22px;font-weight:800;cursor:pointer}.size-control button:disabled{opacity:.35;cursor:not-allowed}.turnstile-mount{margin-top:16px;min-height:0}.turnstile-mount[hidden]{display:none!important}.text-output{display:grid;gap:9px;margin-top:18px}.text-output[hidden]{display:none!important}.text-output label{font-size:14px}.text-output textarea{width:100%;min-height:240px;resize:vertical;border:1px solid var(--line);border-radius:12px;padding:13px;background:#fff;font:inherit;font-size:15px;line-height:1.8;color:var(--ink);unicode-bidi:plaintext}.voice-panel{margin-top:14px;padding:13px;border:1px solid var(--line);border-radius:14px;background:#f7fafc}.voice-head{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:14px}.voice-rate{display:flex;align-items:center;gap:7px;color:var(--muted);font-size:12px}.voice-rate select{border:1px solid var(--line);border-radius:8px;padding:7px;background:white;color:var(--ink);font:inherit}.voice-actions{display:grid;grid-template-columns:1.5fr 1fr .8fr;gap:8px;margin-top:11px}.voice-actions button{min-width:0;padding:10px 8px;border:1px solid #d9e0e8;border-radius:10px;background:white;color:var(--navy);font:inherit;font-size:13px;font-weight:750;cursor:pointer}.voice-actions .voice-primary{background:var(--navy);color:white;border-color:var(--navy)}.voice-actions button:disabled{opacity:.4;cursor:not-allowed}.voice-note{margin:9px 0 0;color:var(--muted);font-size:11px}.run{width:100%;margin-top:18px;padding:14px;border:0;border-radius:12px;background:var(--navy);color:white;font:inherit;font-weight:800;cursor:pointer}.run:disabled{opacity:.42;cursor:not-allowed}.status{font-size:13px;margin:12px 0 0;color:var(--muted)}.error{color:#b42318}.success{color:#147d43}footer{border-top:1px solid var(--line);padding-top:24px;padding-bottom:24px;display:flex;justify-content:space-between;gap:12px;color:var(--muted);font-size:12px}[hidden]{display:none!important}@media(max-width:800px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.section-head{align-items:flex-start;flex-direction:column}.search{width:100%}.hero{padding-top:60px}}@media(max-width:520px){.wrap{padding-left:16px;padding-right:16px}.head nav{gap:13px}.head nav a{font-size:12px}.brand{font-size:14px}.brand-icon{width:37px;height:37px}.hero{padding:52px 18px 60px}.hero h1{letter-spacing:-1.6px}.hero p{font-size:15px}.tools{padding-top:42px;padding-bottom:48px}.grid{grid-template-columns:1fr;gap:12px}.card{min-height:185px;padding:21px}.privacy{padding:20px;gap:12px;margin-bottom:42px}.dtop,.dcontent{padding-left:18px;padding-right:18px}footer{flex-direction:column}}
+
+.voice-panel{margin-top:14px;padding:15px;border:1px solid var(--line);border-radius:15px;background:#f7fafc}
+.voice-head{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:14px}
+.voice-profile{font-size:11px;font-weight:750;color:#315b86;background:#e8f0f8;border-radius:999px;padding:5px 9px;white-space:nowrap}
+.voice-note{margin:9px 0;color:var(--muted);font-size:12px}
+.voice-generate,.voice-transport button,.voice-edit{border:1px solid #d9e0e8;border-radius:10px;background:#fff;color:var(--navy);font:inherit;font-size:13px;font-weight:750;padding:10px 12px;cursor:pointer}
+.voice-generate{width:100%;margin-top:10px;background:var(--navy);color:#fff;border-color:var(--navy)}
+.voice-generate:disabled,.voice-transport button:disabled{opacity:.45;cursor:not-allowed}
+.voice-player{margin-top:12px}
+.voice-transport{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}
+.voice-transport button{padding:10px 4px;white-space:nowrap}
+.voice-transport .voice-play{background:var(--navy);color:#fff;border-color:var(--navy)}
+.voice-progress{margin-top:13px;display:grid;grid-template-columns:44px 1fr 44px;gap:8px;align-items:center;font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}
+.voice-progress input{width:100%;accent-color:#315b86}
+.voice-speed{display:flex;align-items:center;gap:10px;margin-top:12px;font-size:12px;color:var(--muted)}
+.voice-speed input{flex:1;min-width:0;accent-color:#315b86}
+.voice-speed output{min-width:38px;text-align:right;font-weight:800;color:var(--navy)}
+.voice-edit{margin-top:10px;width:100%}
+.voice-reading-text{margin-top:13px;padding:14px;max-height:340px;overflow:auto;border:1px solid #dce4ec;border-radius:12px;background:#fff;white-space:pre-wrap;overflow-wrap:anywhere;line-height:2;font-size:15px;unicode-bidi:plaintext;direction:auto}
+.voice-reading-text .voice-word{border-radius:4px}
+.voice-reading-text .voice-word.current-word{background:#ffe28a;color:#392900;box-shadow:0 0 0 2px #ffe28a}
+.tts-turnstile-mount{position:fixed;left:-10000px;top:-10000px;width:1px;height:1px;overflow:hidden}
+@media(max-width:420px){.voice-transport{grid-template-columns:repeat(3,minmax(0,1fr))}.voice-transport button{padding:11px 5px}}
+
 </style>
 </head>
 <body>
@@ -24,13 +48,32 @@
 <button class="card lavender" data-tool="stamp" data-search="corner text page stamp footer bottom right diagonal bengali arabic"><span class="ico">▤</span><span class="ctitle">Corner Text / Page Stamp</span><span class="desc">Add a multi-line diagonal text block at the bottom-right corner.</span><span class="action">Open tool <b>→</b></span></button>
 <button class="card mint" data-tool="handwriting" data-search="handwriting to text handwritten recognition OCR image bengali english arabic"><span class="ico">✍</span><span class="ctitle">Handwriting to Text</span><span class="desc">Convert handwritten images or PDFs into editable text.</span><span class="action">Open tool <b>→</b></span></button>
 </div><p id="empty" class="status" hidden>No matching tools. Try another search.</p></section>
-<section class="privacy wrap" id="privacy"><div class="check">✓</div><div><h2>Your files stay yours.</h2><p>Merge, split, rotate, watermark, and other PDF edits run locally in your browser. Handwriting to Text is different: the selected image or PDF is sent to the connected AI service through a private backend for transcription. Review the provider's data-use terms before uploading confidential documents.</p></div></section></main>
-<dialog id="dlg" class="dialog"><form method="dialog" class="dtop"><div><span class="eyebrow">PDF WORKSPACE</span><h2 id="title">PDF Tool</h2></div><button class="close" aria-label="Close tool">×</button></form><div class="dcontent"><p id="desc">Choose files to get started.</p><label class="drop" id="drop"><span style="font-size:27px;color:#315b86">↑</span><strong>Choose file(s) or drop them here</strong><span id="hint" style="font-size:12px;color:#65748a">PDF files</span><input id="files" type="file" accept="application/pdf" multiple></label><div id="selected" class="selected" aria-live="polite"></div><div id="opts" class="opts"></div><div id="turnstileMount" class="turnstile-mount" hidden></div><div id="textOutput" class="text-output" hidden><label for="recognizedText"><strong>Recognized Text</strong> <span style="font-weight:400;color:#65748a">— edit anything before copying</span></label><textarea id="recognizedText" rows="13" placeholder="Recognized text will appear here…"></textarea><section class="voice-panel" aria-label="Voice reader"><div class="voice-head"><strong>Voice Reader</strong><label class="voice-rate">Speed<select id="speechRate"><option value="0.75">0.75×</option><option value="1" selected>1× Normal</option><option value="1.15">1.15×</option><option value="1.3">1.3×</option><option value="1.5">1.5×</option></select></label></div><div class="voice-actions"><button type="button" id="speakText" class="voice-primary">▶ Read aloud</button><button type="button" id="pauseText" disabled>Ⅱ Pause</button><button type="button" id="stopText" disabled>■ Stop</button></div><p class="voice-note">Language is detected from the script. Available voices depend on your device.</p></section><button type="button" id="copyText" class="run">Copy Text</button></div><p id="status" class="status" role="status" aria-live="polite"></p><button id="run" class="run" disabled>Choose files to continue</button></div></dialog>
+<section class="privacy wrap" id="privacy"><div class="check">✓</div><div><h2>Your files stay yours.</h2><p>Merge, split, rotate, watermark, and other PDF edits run locally in your browser. Handwriting to Text sends the selected image or PDF to the connected AI service for transcription. Voice Reader sends the recognized text to an external speech provider to generate audio and word timings. Review the provider's data-use terms before uploading confidential documents or reading private text.</p></div></section></main>
+<dialog id="dlg" class="dialog"><form method="dialog" class="dtop"><div><span class="eyebrow">PDF WORKSPACE</span><h2 id="title">PDF Tool</h2></div><button class="close" aria-label="Close tool">×</button></form><div class="dcontent"><p id="desc">Choose files to get started.</p><label class="drop" id="drop"><span style="font-size:27px;color:#315b86">↑</span><strong>Choose file(s) or drop them here</strong><span id="hint" style="font-size:12px;color:#65748a">PDF files</span><input id="files" type="file" accept="application/pdf" multiple></label><div id="selected" class="selected" aria-live="polite"></div><div id="opts" class="opts"></div><div id="turnstileMount" class="turnstile-mount" hidden></div><div id="ttsTurnstileMount" class="tts-turnstile-mount"></div><div id="textOutput" class="text-output" hidden><label for="recognizedText"><strong>Recognized Text</strong> <span style="font-weight:400;color:#65748a">— edit anything before copying</span></label><textarea id="recognizedText" rows="13" placeholder="Recognized text will appear here…"></textarea><section class="voice-panel" aria-label="Voice reader">
+<div class="voice-head"><strong>Voice Reader</strong><span class="voice-profile">Auto · Young Male</span></div>
+<p class="voice-note">Reads Bengali, English and Arabic in the same order as the text. Internet is required to create the audio.</p>
+<button type="button" id="speakText" class="voice-generate">▶ Generate &amp; Read</button>
+<div id="voicePlayer" class="voice-player" hidden>
+<div class="voice-transport">
+<button type="button" id="back10Text" aria-label="Back 10 seconds">−10s</button>
+<button type="button" id="back5Text" aria-label="Back 5 seconds">−5s</button>
+<button type="button" id="playPauseText" class="voice-play">▶ Play</button>
+<button type="button" id="forward5Text" aria-label="Forward 5 seconds">+5s</button>
+<button type="button" id="forward10Text" aria-label="Forward 10 seconds">+10s</button>
+<button type="button" id="stopText" aria-label="Stop and return to beginning">■ Stop</button>
+</div>
+<div class="voice-progress"><span id="elapsedTime">00:00</span><input type="range" id="seekBar" min="0" max="0" step="0.1" value="0" aria-label="Audio progress"><span id="durationTime">00:00</span></div>
+<label class="voice-speed"><span>Speed</span><input type="range" id="speechRate" min="0.5" max="2" step="0.1" value="1"><output id="speechRateValue">1.0×</output></label>
+</div>
+<button type="button" id="editText" class="voice-edit" hidden>✎ Edit Text</button>
+<div id="readingText" class="voice-reading-text" dir="auto" hidden aria-label="Text being read"></div>
+<p id="voiceStatus" class="voice-note" role="status" aria-live="polite">Voice: young adult male · Language: automatic</p>
+</section><button type="button" id="copyText" class="run">Copy Text</button></div><p id="status" class="status" role="status" aria-live="polite"></p><button id="run" class="run" disabled>Choose files to continue</button></div></dialog>
 <footer class="wrap"><span>© <span id="year"></span> Tawhid's PDF Tools</span><span>Made for simple PDF tasks.</span></footer>
 <script>
 (function(){
 'use strict';
-var HANDWRITING_API_URL='https://tawhid-handwriting-api.sadektawhid65.workers.dev',TURNSTILE_SITE_KEY='0x4AAAAAAGG365JtAqeXsoBO',turnstileWidgetId=null,turnstileToken='',PDF=window.PDFLib,grid=document.getElementById('grid'),search=document.getElementById('search'),dlg=document.getElementById('dlg'),title=document.getElementById('title'),desc=document.getElementById('desc'),filesInput=document.getElementById('files'),hint=document.getElementById('hint'),selected=document.getElementById('selected'),opts=document.getElementById('opts'),run=document.getElementById('run'),status=document.getElementById('status'),drop=document.getElementById('drop'),empty=document.getElementById('empty'),textOutput=document.getElementById('textOutput'),recognizedText=document.getElementById('recognizedText'),copyText=document.getElementById('copyText'),turnstileMount=document.getElementById('turnstileMount'),speakText=document.getElementById('speakText'),pauseText=document.getElementById('pauseText'),stopText=document.getElementById('stopText'),speechRate=document.getElementById('speechRate'),speechRunId=0,speechQueue=[],speechIndex=0,active=null,chosen=[];
+var HANDWRITING_API_URL='https://tawhid-handwriting-api.sadektawhid65.workers.dev',TURNSTILE_SITE_KEY='0x4AAAAAAGG365JtAqeXsoBO',turnstileWidgetId=null,turnstileToken='',PDF=window.PDFLib,grid=document.getElementById('grid'),search=document.getElementById('search'),dlg=document.getElementById('dlg'),title=document.getElementById('title'),desc=document.getElementById('desc'),filesInput=document.getElementById('files'),hint=document.getElementById('hint'),selected=document.getElementById('selected'),opts=document.getElementById('opts'),run=document.getElementById('run'),status=document.getElementById('status'),drop=document.getElementById('drop'),empty=document.getElementById('empty'),textOutput=document.getElementById('textOutput'),recognizedText=document.getElementById('recognizedText'),copyText=document.getElementById('copyText'),turnstileMount=document.getElementById('turnstileMount'),speakText=document.getElementById('speakText'),voicePlayer=document.getElementById('voicePlayer'),playPauseText=document.getElementById('playPauseText'),stopText=document.getElementById('stopText'),back5Text=document.getElementById('back5Text'),back10Text=document.getElementById('back10Text'),forward5Text=document.getElementById('forward5Text'),forward10Text=document.getElementById('forward10Text'),editText=document.getElementById('editText'),readingText=document.getElementById('readingText'),seekBar=document.getElementById('seekBar'),elapsedTime=document.getElementById('elapsedTime'),durationTime=document.getElementById('durationTime'),speechRate=document.getElementById('speechRate'),speechRateValue=document.getElementById('speechRateValue'),voiceStatus=document.getElementById('voiceStatus'),ttsTurnstileMount=document.getElementById('ttsTurnstileMount'),ttsTurnstileWidgetId=null,ttsTokenResolve=null,ttsTokenReject=null,ttsTokenTimer=null,audioTracks=[],wordTimings=[],currentTrackIndex=0,audioPlaying=false,audioTotalDuration=0,activeWordIndex=-1,active=null,chosen=[];
 var cfg={merge:{title:'Merge PDF',desc:'Choose two or more PDFs. They will be merged in the order shown.',accept:'.pdf,application/pdf',multi:true,action:'Merge PDFs'},split:{title:'Split PDF',desc:'Export selected page numbers or ranges. Page numbers start at 1.',accept:'.pdf,application/pdf',multi:false,action:'Extract pages'},rotate:{title:'Rotate PDF',desc:'Rotate every page by the selected angle.',accept:'.pdf,application/pdf',multi:false,action:'Rotate PDF'},organize:{title:'Organize PDF',desc:'Remove pages and/or set a new page order.',accept:'.pdf,application/pdf',multi:false,action:'Apply page order'},image:{title:'Image to PDF',desc:'Choose JPG or PNG images. Each image becomes one PDF page.',accept:'image/jpeg,image/png,.jpg,.jpeg,.png',multi:true,action:'Create PDF'},numbers:{title:'Page Numbers',desc:'Add page numbers at the bottom of every page.',accept:'.pdf,application/pdf',multi:false,action:'Add page numbers'},watermark:{title:'Watermark PDF',desc:'Add a light, diagonal text watermark across the center of every page.',accept:'.pdf,application/pdf',multi:false,action:'Add watermark'},stamp:{title:'Corner Text / Page Stamp',desc:'Add a multi-line text block near the bottom-right corner of every page, tilted diagonally.',accept:'.pdf,application/pdf',multi:false,action:'Add page stamp'},handwriting:{title:'Handwriting to Text',desc:'Upload a handwritten image or PDF. The AI will transcribe the writing into an editable text box without translating or rewriting it.',accept:'image/jpeg,image/png,image/webp,application/pdf,.jpg,.jpeg,.png,.webp,.pdf',multi:false,action:'Recognize handwriting'}};
 document.getElementById('year').textContent=new Date().getFullYear();
 search.addEventListener('input',function(){var q=search.value.trim().toLowerCase(),n=0;grid.querySelectorAll('[data-tool]').forEach(function(c){var ok=(c.dataset.search+' '+c.innerText).toLowerCase().includes(q);c.hidden=!ok;if(ok)n++;});empty.hidden=n!==0;});
@@ -67,18 +110,179 @@ else if(active==='watermark'){var text=val('watermarkText').trim();if(!text)thro
 else if(active==='stamp'){var stampText=val('stampText').trim();if(!stampText)throw Error('Enter the corner text. Use a new line for each row.');var stampLines=stampText.split(/\r?\n/).map(function(line){return line.trim();}).filter(Boolean);if(!stampLines.length)throw Error('Enter at least one line of text.');var stampLevel=Number(opts.querySelector('.size-control')?.dataset.level)||3,scale=2;try{if(document.fonts&&document.fonts.load){await document.fonts.load('700 16px "Noto Sans Bengali"',stampText);await document.fonts.load('700 16px "Noto Naskh Arabic"',stampText);}}catch(_){}for(var page of doc.getPages()){var pw=page.getWidth(),ph=page.getHeight(),canvas=document.createElement('canvas');canvas.width=Math.ceil(pw*scale);canvas.height=Math.ceil(ph*scale);var ctx=canvas.getContext('2d');if(!ctx)throw Error('Could not create the page-stamp canvas on this device.');ctx.clearRect(0,0,canvas.width,canvas.height);var fontPx=(8+stampLevel*2)*scale,lineHeight=fontPx*1.35,maxLineWidth=canvas.width*.36;ctx.save();ctx.translate(canvas.width*.58,canvas.height*.77);ctx.rotate(-35*Math.PI/180);ctx.globalAlpha=.30;ctx.fillStyle='#5c6268';ctx.textAlign='left';ctx.textBaseline='middle';stampLines.forEach(function(line,index){ctx.direction=/[\u0600-\u06FF]/.test(line)?'rtl':'ltr';ctx.font='700 '+fontPx+'px "Noto Sans Bengali", "Noto Naskh Arabic", sans-serif';ctx.fillText(line,0,(index-(stampLines.length-1)/2)*lineHeight,maxLineWidth);});ctx.restore();var stampBlob=await new Promise(function(resolve,reject){canvas.toBlob(function(b){if(b)resolve(b);else reject(Error('Could not render the page stamp.'));},'image/png');});var stampPng=await doc.embedPng(await stampBlob.arrayBuffer());page.drawImage(stampPng,{x:0,y:0,width:pw,height:ph});}out=await doc.save();download(out,outputName('Corner Text',chosen[0]));}}
 status.textContent='Done! Your file download should begin shortly.';status.className='status success';
 }catch(e){error(e&&e.message?e.message:'Could not process this file. It may be damaged or password-protected.');}finally{run.textContent=cfg[active]?.action||'Process PDF';if(active==='handwriting'){turnstileToken='';if(turnstileWidgetId!==null&&window.turnstile){try{window.turnstile.reset(turnstileWidgetId);}catch(_){}}updateRunState();}else{run.disabled=false;}}});
-function getSpeechLang(ch){var cp=ch.codePointAt(0);if((cp>=0x0980&&cp<=0x09FF)||(cp>=0x09E6&&cp<=0x09EF))return 'bn-BD';if((cp>=0x0600&&cp<=0x06FF)||(cp>=0x0750&&cp<=0x077F)||(cp>=0x08A0&&cp<=0x08FF))return 'ar';if((cp>=0x0041&&cp<=0x005A)||(cp>=0x0061&&cp<=0x007A)||(cp>=0x00C0&&cp<=0x024F))return 'en-US';return null;}
-function makeSpeechQueue(value){var chars=Array.from(value),langs=chars.map(getSpeechLang);for(var i=0;i<langs.length;i++){if(!langs[i]){var chosenLang=null;for(var p=i-1;p>=0;p--){if(langs[p]){chosenLang=langs[p];break;}}if(!chosenLang){for(var n=i+1;n<langs.length;n++){if(langs[n]){chosenLang=langs[n];break;}}}langs[i]=chosenLang||'en-US';}}var groups=[];for(var j=0;j<chars.length;j++){var lang=langs[j],last=groups[groups.length-1];if(last&&last.lang===lang)last.text+=chars[j];else groups.push({lang:lang,text:chars[j]});}var queue=[];groups.forEach(function(group){var text=group.text;while(text.length>480){var cut=text.lastIndexOf(' ',480);if(cut<180)cut=480;queue.push({lang:group.lang,text:text.slice(0,cut)});text=text.slice(cut);}if(text)queue.push({lang:group.lang,text:text});});return queue;}
-function updateSpeechButtons(reading){var supported=typeof window.speechSynthesis!=='undefined'&&typeof window.SpeechSynthesisUtterance!=='undefined';speakText.disabled=!supported||!recognizedText.value.trim()||reading;pauseText.disabled=!supported||!reading;stopText.disabled=!supported||!reading;pauseText.textContent=window.speechSynthesis&&window.speechSynthesis.paused?'▶ Resume':'Ⅱ Pause';}
-function resetVoiceControls(){stopSpeech(true);updateSpeechButtons(false);}
-function stopSpeech(silent){speechRunId++;speechQueue=[];speechIndex=0;if(typeof window.speechSynthesis!=='undefined')window.speechSynthesis.cancel();if(pauseText)pauseText.textContent='Ⅱ Pause';updateSpeechButtons(false);if(!silent&&status){status.textContent='Voice reading stopped.';status.className='status';}}
-function findVoice(lang){if(typeof window.speechSynthesis==='undefined')return null;var voices=window.speechSynthesis.getVoices()||[],base=lang.split('-')[0].toLowerCase();return voices.find(function(v){return v.lang.toLowerCase()===lang.toLowerCase();})||voices.find(function(v){return v.lang.toLowerCase().split('-')[0]===base;})||null;}
-function speakNext(runId){if(runId!==speechRunId)return;if(speechIndex>=speechQueue.length){updateSpeechButtons(false);status.textContent='Voice reading finished.';status.className='status success';return;}var part=speechQueue[speechIndex],utterance=new SpeechSynthesisUtterance(part.text),voice=findVoice(part.lang);utterance.lang=voice?voice.lang:part.lang;if(voice)utterance.voice=voice;utterance.rate=Number(speechRate.value)||1;utterance.onstart=function(){if(runId===speechRunId){updateSpeechButtons(true);status.textContent='Reading aloud…';status.className='status';}};utterance.onend=function(){if(runId===speechRunId){speechIndex++;setTimeout(function(){speakNext(runId);},80);}};utterance.onerror=function(event){if(runId!==speechRunId)return;stopSpeech(true);status.textContent=event.error==='not-allowed'?'The browser blocked audio. Press Read aloud again.':'A voice for one language may not be available on this device.';status.className='status error';};window.speechSynthesis.speak(utterance);}
-speakText.addEventListener('click',function(){var text=recognizedText.value.trim();if(!text){status.textContent='There is no text to read yet.';status.className='status error';return;}if(typeof window.speechSynthesis==='undefined'||typeof window.SpeechSynthesisUtterance==='undefined'){status.textContent='Voice reading is not supported in this browser.';status.className='status error';return;}window.speechSynthesis.cancel();speechRunId++;var runId=speechRunId;speechQueue=makeSpeechQueue(text);speechIndex=0;updateSpeechButtons(true);speakNext(runId);});
-pauseText.addEventListener('click',function(){if(typeof window.speechSynthesis==='undefined')return;if(window.speechSynthesis.paused){window.speechSynthesis.resume();pauseText.textContent='Ⅱ Pause';status.textContent='Voice reading resumed.';}else if(window.speechSynthesis.speaking){window.speechSynthesis.pause();pauseText.textContent='▶ Resume';status.textContent='Voice reading paused.';}});
-stopText.addEventListener('click',function(){stopSpeech(false);});
+function clearAudioTracks(){
+  audioTracks.forEach(function(track){try{track.audio.pause();}catch(_){}try{URL.revokeObjectURL(track.url);}catch(_){}});
+  audioTracks=[];wordTimings=[];currentTrackIndex=0;audioPlaying=false;audioTotalDuration=0;activeWordIndex=-1;
+}
+function stopSpeech(silent){
+  clearAudioTracks();
+  if(readingText){readingText.hidden=true;readingText.textContent='';}
+  if(recognizedText)recognizedText.hidden=false;
+  if(voicePlayer)voicePlayer.hidden=true;
+  if(speakText){speakText.hidden=false;speakText.disabled=false;speakText.textContent='▶ Generate & Read';}
+  if(editText)editText.hidden=true;
+  if(playPauseText)playPauseText.textContent='▶ Play';
+  if(seekBar){seekBar.max='0';seekBar.value='0';}
+  if(elapsedTime)elapsedTime.textContent='00:00';
+  if(durationTime)durationTime.textContent='00:00';
+  if(!silent&&voiceStatus){voiceStatus.textContent='Playback stopped.';}
+}
+function resetVoiceControls(){stopSpeech(true);if(voiceStatus)voiceStatus.textContent='Voice: young adult male · Language: automatic';}
+function resolveTtsToken(token,error){
+  if(ttsTokenTimer){clearTimeout(ttsTokenTimer);ttsTokenTimer=null;}
+  var resolve=ttsTokenResolve,reject=ttsTokenReject;ttsTokenResolve=null;ttsTokenReject=null;
+  if(error){if(reject)reject(error);}else if(resolve)resolve(token);
+}
+function getTtsToken(){
+  return new Promise(function(resolve,reject){
+    if(!window.turnstile){reject(Error('Security verification is still loading. Please try again in a moment.'));return;}
+    ttsTokenResolve=resolve;ttsTokenReject=reject;
+    try{
+      if(ttsTurnstileWidgetId===null){
+        ttsTurnstileWidgetId=window.turnstile.render(ttsTurnstileMount,{sitekey:TURNSTILE_SITE_KEY,size:'invisible',callback:function(token){resolveTtsToken(token);},'error-callback':function(){resolveTtsToken('',Error('Security verification failed. Please try again.'));},'expired-callback':function(){resolveTtsToken('',Error('Security verification expired. Please try again.'));}});
+      }else{window.turnstile.reset(ttsTurnstileWidgetId);}
+      ttsTokenTimer=setTimeout(function(){resolveTtsToken('',Error('Security verification timed out. Please try again.'));},25000);
+      window.turnstile.execute(ttsTurnstileWidgetId);
+    }catch(e){resolveTtsToken('',e);}
+  });
+}
+function formatTime(value){
+  var seconds=Math.max(0,Math.floor(Number(value)||0)),hours=Math.floor(seconds/3600),minutes=Math.floor((seconds%3600)/60),rest=seconds%60;
+  return hours?String(hours).padStart(2,'0')+':'+String(minutes).padStart(2,'0')+':'+String(rest).padStart(2,'0'):String(minutes).padStart(2,'0')+':'+String(rest).padStart(2,'0');
+}
+function getGlobalAudioTime(){
+  var track=audioTracks[currentTrackIndex];return track?(track.startTime||0)+(track.audio.currentTime||0):0;
+}
+function escapeHtml(value){
+  return String(value).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+function buildWordTimings(clips){
+  var all=[];
+  clips.forEach(function(clip,trackIndex){
+    var a=clip.alignment;if(!a||!Array.isArray(a.characters)||!Array.isArray(a.character_start_times_seconds)||!Array.isArray(a.character_end_times_seconds))return;
+    if(a.characters.join('').normalize('NFC')!==clip.text.normalize('NFC'))return;
+    var segments=[];
+    try{if(typeof Intl.Segmenter==='function'){var seg=new Intl.Segmenter(clip.language||'en',{granularity:'word'});segments=Array.from(seg.segment(clip.text)).filter(function(s){return s.isWordLike;}).map(function(s){return {index:s.index,text:s.segment};});}}catch(_){}
+    if(!segments.length){var re=/[\p{L}\p{N}]+/gu,m;while((m=re.exec(clip.text)))segments.push({index:m.index,text:m[0]});}
+    segments.forEach(function(s){
+      var cpStart=Array.from(clip.text.slice(0,s.index)).length,cpLength=Array.from(s.text).length,cpEnd=cpStart+cpLength;
+      if(cpStart>=a.character_start_times_seconds.length||cpEnd-1>=a.character_end_times_seconds.length)return;
+      var startTime=a.character_start_times_seconds[cpStart],endTime=a.character_end_times_seconds[cpEnd-1];
+      if(!Number.isFinite(startTime)||!Number.isFinite(endTime))return;
+      all.push({start:clip.startIndex+s.index,end:clip.startIndex+s.index+s.text.length,startTime:startTime,endTime:endTime,trackIndex:trackIndex});
+    });
+  });
+  return all.sort(function(a,b){return a.start-b.start;});
+}
+function renderReadingText(text){
+  var cursor=0,html='';
+  wordTimings.forEach(function(word,index){
+    if(word.start<cursor||word.end>text.length)return;
+    html+=escapeHtml(text.slice(cursor,word.start))+'<span class="voice-word" data-word-index="'+index+'">'+escapeHtml(text.slice(word.start,word.end))+'</span>';
+    cursor=word.end;
+  });
+  html+=escapeHtml(text.slice(cursor));
+  readingText.innerHTML=html||escapeHtml(text);
+}
+function updateWordHighlight(){
+  var track=audioTracks[currentTrackIndex];if(!track)return;
+  var t=track.audio.currentTime||0,found=-1;
+  for(var i=0;i<wordTimings.length;i++){var w=wordTimings[i];if(w.trackIndex===currentTrackIndex&&t>=w.startTime-0.015&&t<=w.endTime+0.03){found=i;break;}}
+  if(found===activeWordIndex)return;
+  var old=readingText.querySelector('.current-word');if(old)old.classList.remove('current-word');
+  activeWordIndex=found;
+  if(found>=0){var el=readingText.querySelector('[data-word-index="'+found+'"]');if(el)el.classList.add('current-word');}
+}
+function updateAudioProgress(){
+  if(!audioTracks.length)return;
+  var current=getGlobalAudioTime();
+  seekBar.max=String(audioTotalDuration||1);seekBar.value=String(Math.min(current,audioTotalDuration));
+  elapsedTime.textContent=formatTime(current);durationTime.textContent=formatTime(audioTotalDuration);
+  updateWordHighlight();
+}
+function playTrack(index){
+  if(index<0||index>=audioTracks.length)return Promise.resolve();
+  audioTracks.forEach(function(track,i){if(i!==index)track.audio.pause();});
+  currentTrackIndex=index;
+  var audio=audioTracks[index].audio;
+  audio.playbackRate=Number(speechRate.value)||1;
+  try{audio.preservesPitch=true;audio.webkitPreservesPitch=true;}catch(_){}
+  return audio.play().then(function(){audioPlaying=true;playPauseText.textContent='Ⅱ Pause';voiceStatus.textContent='Reading '+({bn:'বাংলা',en:'English',ar:'Arabic'}[audioTracks[index].language]||'text')+'…';updateAudioProgress();}).catch(function(e){audioPlaying=false;playPauseText.textContent='▶ Play';voiceStatus.textContent='Audio is ready. Tap Play to start.';throw e;});
+}
+function onAudioEnded(index){
+  if(index!==currentTrackIndex)return;
+  if(index+1<audioTracks.length){playTrack(index+1).catch(function(){});}
+  else{audioPlaying=false;playPauseText.textContent='▶ Play';updateAudioProgress();voiceStatus.textContent='Reading finished.';}
+}
+async function prepareAudioPlayer(data,text){
+  clearAudioTracks();
+  for(var i=0;i<data.clips.length;i++){
+    var clip=data.clips[i],binary=atob(clip.audioBase64),bytes=new Uint8Array(binary.length);
+    for(var j=0;j<binary.length;j++)bytes[j]=binary.charCodeAt(j);
+    var blob=new Blob([bytes],{type:'audio/mpeg'}),url=URL.createObjectURL(blob),audio=new Audio();
+    audio.preload='auto';audio.src=url;audio.playbackRate=Number(speechRate.value)||1;
+    var track={audio:audio,url:url,language:clip.language,text:clip.text,startIndex:clip.startIndex,startTime:0,duration:0};
+    audioTracks.push(track);
+    (function(idx){audioTracks[idx].audio.addEventListener('timeupdate',function(){if(idx===currentTrackIndex)updateAudioProgress();});audioTracks[idx].audio.addEventListener('ended',function(){onAudioEnded(idx);});})(i);
+  }
+  await Promise.all(audioTracks.map(function(track){
+    return new Promise(function(resolve,reject){
+      var done=false,timer=setTimeout(function(){if(!done){done=true;reject(Error('Audio loading took too long. Please try again.'));}},30000);
+      track.audio.addEventListener('loadedmetadata',function(){if(done)return;done=true;clearTimeout(timer);if(!Number.isFinite(track.audio.duration)||track.audio.duration<=0)reject(Error('The generated audio has an invalid duration.'));else{track.duration=track.audio.duration;resolve();}},{once:true});
+      track.audio.addEventListener('error',function(){if(done)return;done=true;clearTimeout(timer);reject(Error('A generated audio segment could not be loaded.'));},{once:true});
+      track.audio.load();
+    });
+  }));
+  var total=0;audioTracks.forEach(function(track){track.startTime=total;total+=track.duration;});
+  audioTotalDuration=total;wordTimings=buildWordTimings(data.clips);
+  renderReadingText(text);recognizedText.hidden=true;readingText.hidden=false;voicePlayer.hidden=false;editText.hidden=false;speakText.hidden=true;
+  seekBar.min='0';seekBar.max=String(audioTotalDuration);seekBar.step='0.1';seekBar.value='0';elapsedTime.textContent='00:00';durationTime.textContent=formatTime(audioTotalDuration);
+  voiceStatus.textContent=wordTimings.length?'Audio ready. Word highlighting is enabled.':'Audio ready. Word timing was not returned for this passage.';
+  try{await playTrack(0);}catch(_){}
+}
+function seekTo(seconds){
+  if(!audioTracks.length)return;
+  var target=Math.max(0,Math.min(audioTotalDuration,Number(seconds)||0)),index=audioTracks.length-1;
+  for(var i=0;i<audioTracks.length;i++){if(target<audioTracks[i].startTime+audioTracks[i].duration||i===audioTracks.length-1){index=i;break;}}
+  var wasPlaying=audioPlaying;audioTracks.forEach(function(track){track.audio.pause();});
+  currentTrackIndex=index;audioTracks[index].audio.currentTime=Math.max(0,Math.min(audioTracks[index].duration,target-audioTracks[index].startTime));
+  audioPlaying=false;updateAudioProgress();
+  if(wasPlaying)playTrack(index).catch(function(){});
+}
+speakText.addEventListener('click',async function(){
+  var text=recognizedText.value;if(!text.trim()){voiceStatus.textContent='There is no text to read yet.';return;}
+  speakText.disabled=true;voiceStatus.textContent='Preparing the young male voice and audio…';
+  try{
+    var token=await getTtsToken();
+    var response=await fetch(HANDWRITING_API_URL.replace(/\/$/,'')+'/api/tts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:text,turnstileToken:token})});
+    var result=await response.json().catch(function(){return {};});
+    if(!response.ok)throw Error(result.error||'Voice Reader could not generate audio.');
+    if(!Array.isArray(result.clips)||!result.clips.length)throw Error('The speech service returned no audio.');
+    voiceStatus.textContent='Audio generated. Loading the player…';
+    await prepareAudioPlayer(result,text);
+  }catch(e){voiceStatus.textContent=e&&e.message?e.message:'Voice Reader could not generate audio.';speakText.disabled=false;}
+});
+playPauseText.addEventListener('click',function(){
+  if(!audioTracks.length)return;
+  if(audioPlaying){audioTracks[currentTrackIndex].audio.pause();audioPlaying=false;playPauseText.textContent='▶ Resume';voiceStatus.textContent='Reading paused.';}
+  else{playTrack(currentTrackIndex).catch(function(){});}
+});
+stopText.addEventListener('click',function(){
+  if(!audioTracks.length)return;
+  audioTracks.forEach(function(track){track.audio.pause();track.audio.currentTime=0;});
+  currentTrackIndex=0;audioPlaying=false;playPauseText.textContent='▶ Play';activeWordIndex=-1;
+  var old=readingText.querySelector('.current-word');if(old)old.classList.remove('current-word');
+  updateAudioProgress();voiceStatus.textContent='Stopped. Press Play to start from the beginning.';
+});
+back5Text.addEventListener('click',function(){seekTo(getGlobalAudioTime()-5);});
+back10Text.addEventListener('click',function(){seekTo(getGlobalAudioTime()-10);});
+forward5Text.addEventListener('click',function(){seekTo(getGlobalAudioTime()+5);});
+forward10Text.addEventListener('click',function(){seekTo(getGlobalAudioTime()+10);});
+seekBar.addEventListener('change',function(){seekTo(Number(seekBar.value));});
+speechRate.addEventListener('input',function(){var rate=Number(speechRate.value)||1;speechRateValue.textContent=rate.toFixed(1)+'×';audioTracks.forEach(function(track){track.audio.playbackRate=rate;try{track.audio.preservesPitch=true;track.audio.webkitPreservesPitch=true;}catch(_){}});});
+editText.addEventListener('click',function(){stopSpeech(true);recognizedText.hidden=false;recognizedText.focus();voiceStatus.textContent='Edit the text, then generate the audio again.';});
+recognizedText.addEventListener('input',function(){if(audioTracks.length){stopSpeech(true);voiceStatus.textContent='Text changed. Generate the audio again to read the updated text.';}});
 dlg.addEventListener('close',function(){stopSpeech(true);});
-copyText.addEventListener('click',async function(){var text=recognizedText.value;if(!text){status.textContent='There is no text to copy yet.';status.className='status error';return;}try{if(navigator.clipboard&&navigator.clipboard.writeText){await navigator.clipboard.writeText(text);}else{recognizedText.focus();recognizedText.select();if(!document.execCommand('copy'))throw Error('Copy was not available.');}status.textContent='Text copied to clipboard.';status.className='status success';}catch(e){recognizedText.focus();recognizedText.select();status.textContent='Select the text and choose Copy.';status.className='status';}});
 function error(m){status.textContent=m;status.className='status error';run.disabled=false;run.textContent=cfg[active]?.action||'Process PDF';}
 })();
 </script>
