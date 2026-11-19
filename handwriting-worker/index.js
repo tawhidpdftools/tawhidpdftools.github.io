@@ -7,6 +7,89 @@ const ALLOWED_ORIGINS = new Set(["https://tawhidpdftools.github.io"]);
 const MODELS = ["gemini-3.6-flash", "gemini-3.5-flash-lite"];
 const MAX_BODY_BYTES = 15 * 1024 * 1024;
 const MAX_FILE_BYTES = 10 * 1024 * 1024;
+const TTS_MAX_CHARS = 12000;
+const TTS_CHUNK_CHARS = 2400;
+
+function speechLanguageOf(char) {
+  if (/[\u0980-\u09FF]/u.test(char)) return "bn";
+  if (/[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF]/u.test(char)) return "ar";
+  if (/\p{Script=Latin}/u.test(char)) return "en";
+  return null;
+}
+
+function splitSpeechText(text) {
+  const chars = Array.from(text);
+  const langs = chars.map(speechLanguageOf);
+  let previous = null;
+  for (let i = 0; i < langs.length; i++) {
+    if (langs[i]) previous = langs[i];
+    else if (previous) langs[i] = previous;
+  }
+  let next = null;
+  for (let i = langs.length - 1; i >= 0; i--) {
+    if (langs[i]) next = langs[i];
+    else langs[i] = next || "en";
+  }
+
+  const groups = [];
+  let offset = 0;
+  for (let i = 0; i < chars.length; i++) {
+    const lang = langs[i] || "en";
+    let group = groups[groups.length - 1];
+    if (!group || group.language !== lang) {
+      group = { language: lang, startIndex: offset, text: "" };
+      groups.push(group);
+    }
+    group.text += chars[i];
+    offset += chars[i].length;
+  }
+
+  const chunks = [];
+  for (const group of groups) {
+    const groupChars = Array.from(group.text);
+    let cursor = 0;
+    let localOffset = 0;
+    while (cursor < groupChars.length) {
+      let end = Math.min(cursor + TTS_CHUNK_CHARS, groupChars.length);
+      if (end < groupChars.length) {
+        const minEnd = cursor + Math.floor(TTS_CHUNK_CHARS * 0.65);
+        for (let j = end; j > minEnd; j--) {
+          if (/\s|[.!?。！？،؛,:;]/u.test(groupChars[j - 1])) {
+            end = j;
+            break;
+          }
+        }
+      }
+      const part = groupChars.slice(cursor, end).join("");
+      if (part.trim()) {
+        chunks.push({
+          language: group.language,
+          startIndex: group.startIndex + localOffset,
+          text: part
+        });
+      }
+      for (let j = cursor; j < end; j++) localOffset += groupChars[j].length;
+      cursor = end;
+    }
+  }
+  return chunks;
+}
+
+async function verifyTurnstileToken(token, request, env) {
+  if (!token || token.length > 2048 || !env.TURNSTILE_SECRET) return false;
+  const form = new FormData();
+  form.append("secret", env.TURNSTILE_SECRET);
+  form.append("response", token);
+  const remoteIp = request.headers.get("CF-Connecting-IP");
+  if (remoteIp) form.append("remoteip", remoteIp);
+  const response = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
+    method: "POST",
+    body: form
+  });
+  const result = await response.json().catch(() => ({}));
+  return !!result.success && result.hostname === "tawhidpdftools.github.io";
+}
+
 const ALLOWED_TYPES = new Set(["image/jpeg", "image/png", "image/webp", "application/pdf"]);
 
 function corsHeaders(origin) {
@@ -38,6 +121,66 @@ export default {
     if (request.method === "GET" && url.pathname === "/health") {
       return json({ ok: true, service: "handwriting-recognition", model: MODELS[0] }, 200, cors);
     }
+    if (request.method === "POST" && url.pathname === "/api/tts") {
+      if (!env.ELEVENLABS_API_KEY || !env.ELEVENLABS_VOICE_ID) {
+        return json({
+          error: "Voice Reader setup is incomplete. Add ELEVENLABS_API_KEY and ELEVENLABS_VOICE_ID as Worker Secrets."
+        }, 503, cors);
+      }
+      try {
+        const body = await request.json();
+        const text = String(body.text || "");
+        if (!text.trim()) return json({ error: "There is no text to read." }, 400, cors);
+        if (text.length > TTS_MAX_CHARS) {
+          return json({
+            error: "This reading is longer than 12,000 characters. Please divide the text into smaller sections."
+          }, 413, cors);
+        }
+        if (!(await verifyTurnstileToken(String(body.turnstileToken || ""), request, env))) {
+          return json({ error: "Security verification failed. Please try again." }, 403, cors);
+        }
+
+        const parts = splitSpeechText(text);
+        if (!parts.length) return json({ error: "No readable text was found." }, 400, cors);
+        const clips = [];
+        for (const part of parts) {
+          const endpoint = "https://api.elevenlabs.io/v1/text-to-speech/" +
+            encodeURIComponent(env.ELEVENLABS_VOICE_ID) +
+            "/with-timestamps?output_format=mp3_22050_32";
+          const response = await fetch(endpoint, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "xi-api-key": env.ELEVENLABS_API_KEY
+            },
+            body: JSON.stringify({
+              text: part.text,
+              model_id: "eleven_v3",
+              language_code: part.language
+            })
+          });
+          const result = await response.json().catch(() => ({}));
+          if (!response.ok || !result.audio_base64) {
+            const detail = result.detail?.message || result.detail || result.message ||
+              "The speech service could not generate this language segment.";
+            return json({
+              error: typeof detail === "string" ? detail : "The speech service rejected the request."
+            }, response.status === 429 ? 429 : 502, cors);
+          }
+          clips.push({
+            language: part.language,
+            startIndex: part.startIndex,
+            text: part.text,
+            audioBase64: result.audio_base64,
+            alignment: result.alignment || null
+          });
+        }
+        return json({ clips, characterCount: text.length }, 200, cors);
+      } catch (error) {
+        return json({ error: error?.message || "Voice Reader could not generate audio." }, 500, cors);
+      }
+    }
+
     if (request.method !== "POST" || url.pathname !== "/api/recognize") {
       return json({ error: "Not found." }, 404, cors);
     }
