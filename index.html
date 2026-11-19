@@ -260,7 +260,15 @@ speakText.addEventListener('click',async function(){
     if(!Array.isArray(result.clips)||!result.clips.length)throw Error('The speech service returned no audio.');
     voiceStatus.textContent='Audio generated. Loading the player…';
     await prepareAudioPlayer(result,text);
-  }catch(e){voiceStatus.textContent=e&&e.message?e.message:'Voice Reader could not generate audio.';speakText.disabled=false;}
+  }catch(e){
+    clearAudioTracks();
+    if(readingText){readingText.hidden=true;readingText.textContent='';}
+    if(recognizedText)recognizedText.hidden=false;
+    if(voicePlayer)voicePlayer.hidden=true;
+    if(editText)editText.hidden=true;
+    voiceStatus.textContent=e&&e.message?e.message:'Voice Reader could not generate audio.';
+    speakText.disabled=false;
+  }
 });
 playPauseText.addEventListener('click',function(){
   if(!audioTracks.length)return;
