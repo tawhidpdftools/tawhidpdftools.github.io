@@ -25,6 +25,25 @@ The API key must remain a Cloudflare Worker Secret. Never paste it into `index.h
 The Worker accepts only requests from https://tawhidpdftools.github.io and exposes:
 - `GET /health`
 - `POST /api/recognize`
+- `POST /api/tts` (multilingual speech generation with character timing)
+
+## 3. Enable Voice Reader (additional setup)
+
+Voice Reader uses ElevenLabs text-to-speech so it can provide real audio duration, 5/10-second seeking, and word highlighting from returned character timestamps. It reads Bengali, English, and Arabic in source order using one multilingual male young-adult voice.
+
+1. Create an ElevenLabs account and API key at https://elevenlabs.io/app/settings/api-keys.
+2. In ElevenLabs, open **Voices → My Voices → Add a new voice → Voice Design**. This creates a synthetic voice from a description; it does **not** clone your own voice.
+3. Use this description for the voice:  
+   `A clear, natural young adult male voice, perceived age around 18–20. Calm, student-like, friendly and articulate; medium pitch, not deep, not elderly, not theatrical. Designed for educational audiobook narration. It should pronounce Bangladeshi Bengali, English, and Modern Standard Arabic clearly and consistently.`
+4. Generate the previews, choose the most suitable male voice, and save it. Copy its Voice ID from **My Voices**.
+5. In Cloudflare → **Workers & Pages** → your Worker → **Settings** → **Variables and Secrets**, add two **Secret** values:
+   - `ELEVENLABS_API_KEY` — your ElevenLabs API key.
+   - `ELEVENLABS_VOICE_ID` — the Voice ID saved in step 4.
+6. Replace the Worker code with the updated `index.js` from this folder and **Deploy**.
+
+The TTS route requires a fresh Turnstile verification, accepts up to 12,000 characters per reading, and splits text by Bengali/English/Arabic script while preserving order. It uses `eleven_v3` with `/with-timestamps`; generated audio and timing are returned to the browser and are not stored by this Worker. ElevenLabs usage may consume account credits. Review its pricing and data-use terms before using private text.
+
+**Important:** The GitHub Pages frontend updates automatically after a commit, but the Cloudflare Worker is deployed separately. The Worker will not support Voice Reader until the updated Worker code is deployed and both ElevenLabs Secrets are added.
 
 ## 3. Connect the frontend
 
