@@ -29,7 +29,7 @@ The Worker accepts only requests from https://tawhidpdftools.github.io and expos
 
 ## 3. Enable Voice Reader (additional setup)
 
-Voice Reader uses ElevenLabs text-to-speech so it can provide real audio duration, 5/10-second seeking, and word highlighting from returned character timestamps. It reads Bengali, English, and Arabic in source order using one multilingual male young-adult voice.
+Voice Reader uses ElevenLabs text-to-speech so it can provide real audio duration, 5/10-second seeking, and word highlighting from returned character timestamps. It reads Bengali, English, and Arabic in source order using the saved young-adult male voice. Before TTS, the Worker uses the existing GEMINI_API_KEY to classify sentence-level emotion tags; protected scripture/religious quotation text is excluded from the classifier and stays neutral. Emotion classification is best-effort: if Gemini fails, the reader continues with neutral delivery.
 
 1. Create an ElevenLabs account and API key at https://elevenlabs.io/app/settings/api-keys.
 2. In ElevenLabs, open **Voices → My Voices → Add a new voice → Voice Design**. This creates a synthetic voice from a description; it does **not** clone your own voice.
@@ -41,7 +41,7 @@ Voice Reader uses ElevenLabs text-to-speech so it can provide real audio duratio
    - `ELEVENLABS_VOICE_ID` — the Voice ID saved in step 4.
 6. Replace the Worker code with the updated `index.js` from this folder and **Deploy**.
 
-The TTS route requires a fresh Turnstile verification, accepts up to 12,000 characters per reading, and splits text by Bengali/English/Arabic script while preserving order. It uses `eleven_v3` with `/with-timestamps`; generated audio and timing are returned to the browser and are not stored by this Worker. ElevenLabs usage may consume account credits. Review its pricing and data-use terms before using private text.
+The TTS route requires a fresh Turnstile verification, accepts up to 12,000 characters per reading, and splits text by Bengali/English/Arabic script while preserving order. It uses `eleven_v4` with `eleven_v3` fallback on unsupported-model errors and `/with-timestamps`; generated audio and timing are returned to the browser and are not stored by this Worker. Sentence emotion classification uses the existing `GEMINI_API_KEY` with stateless `store: false` interactions. This sends non-protected sentences to Gemini; detected scripture, Hadith, dua and common Islamic quotations are filtered out and kept neutral. ElevenLabs and Gemini usage may consume account credits. Review both providers' pricing and data-use terms before using private text.
 
 **Important:** The GitHub Pages frontend updates automatically after a commit, but the Cloudflare Worker is deployed separately. The Worker will not support Voice Reader until the updated Worker code is deployed and both ElevenLabs Secrets are added.
 
